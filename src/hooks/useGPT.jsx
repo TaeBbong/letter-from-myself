@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const useGPT = () => {
   const fetchGPTResult = async (answers) => {
-    const apiKey = process.env.REACT_APP_OPENAI_API_KEY; // 환경 변수에서 API 키 가져오기
+    const apiKey = process.env.OPENAI_API_KEY; // 환경 변수에서 API 키 가져오기
     if (!apiKey) {
       throw new Error('API 키가 설정되지 않았습니다. .env 파일을 확인하세요.');
     }
