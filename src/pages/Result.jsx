@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, Card } from '@mui/material';
+import html2canvas from 'html2canvas';
 import useGPT from '../hooks/useGPT';
 
 const Result = () => {
   const [result, setResult] = useState(null);
+  const [imageURL, setImageURL] = useState(null);
   const answers = JSON.parse(localStorage.getItem('answers'));
   const { fetchGPTResult } = useGPT();
 
@@ -13,6 +15,26 @@ const Result = () => {
       setResult(data);
     })();
   }, [answers, fetchGPTResult]);
+
+  const captureResult = async () => {
+    const resultElement = document.getElementById('result-content');
+    const canvas = await html2canvas(resultElement);
+    const dataURL = canvas.toDataURL('image/png');
+    setImageURL(dataURL);
+  };
+
+  const shareToInstagram = () => {
+    if (imageURL) {
+      const link = document.createElement('a');
+      link.href = imageURL;
+      link.download = 'my-future-letter.png';
+      link.click();
+
+      alert('이미지를 다운로드한 후 인스타그램 스토리로 업로드하세요!');
+    } else {
+      alert('이미지를 캡처하는 중입니다. 잠시 후 다시 시도해주세요.');
+    }
+  };
 
   if (!result) {
     return (
@@ -24,14 +46,58 @@ const Result = () => {
   }
 
   return (
-    <Box textAlign="center" mt={4}>
-      <Typography variant="h5" gutterBottom>
-        내년의 나에게 보내는 편지
-      </Typography>
-      <Typography>{result.letter}</Typography>
-      <Button variant="contained" color="secondary" sx={{ mt: 2 }}>
-        공유하기
-      </Button>
+    <Box
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'background.default',
+        p: 3,
+      }}
+    >
+      <Card
+        id="result-content"
+        sx={{
+          width: '100%',
+          maxWidth: 500,
+          p: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          내년의 나에게 보내는 편지
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          {result.letter}
+        </Typography>
+        <img
+          src={result.image}
+          alt="Generated Illustration"
+          style={{ width: '100%', marginTop: '16px', borderRadius: '8px' }}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 3 }}
+          onClick={captureResult}
+        >
+          결과 저장
+        </Button>
+        {imageURL && (
+          <Button
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            sx={{ mt: 2 }}
+            onClick={shareToInstagram}
+          >
+            인스타그램으로 공유
+          </Button>
+        )}
+      </Card>
     </Box>
   );
 };

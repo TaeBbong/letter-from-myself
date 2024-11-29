@@ -5,14 +5,30 @@ import Intro from './pages/Intro';
 import Questionnaire from './pages/Questionnaire';
 import Result from './pages/Result';
 
-// MUI 테마 설정
+// 연말 감성 테마 설정
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#A52A2A', // 파스텔 톤의 버건디
+      contrastText: '#fff',
     },
     secondary: {
-      main: '#f50057',
+      main: '#FFE4E1', // 따뜻한 분홍 톤
+    },
+    background: {
+      default: '#FFF8F0', // 부드러운 연말 배경색
+    },
+  },
+  typography: {
+    fontFamily: `'Quicksand', sans-serif`,
+    h4: {
+      fontWeight: 700,
+    },
+    h6: {
+      fontWeight: 600,
+    },
+    body1: {
+      lineHeight: 1.8,
     },
   },
 });

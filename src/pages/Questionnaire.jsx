@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography, Card } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const questions = [
@@ -27,21 +27,46 @@ const Questionnaire = () => {
   };
 
   return (
-    <Box textAlign="center" mt={4}>
-      <Typography variant="h6" gutterBottom>
-        {questions[currentQuestion]}
-      </Typography>
-      <TextField
-        fullWidth
-        variant="outlined"
-        placeholder="답변을 입력하세요"
-        onChange={handleAnswer}
-        value={answers[currentQuestion] || ''}
-        sx={{ mb: 2 }}
-      />
-      <Button variant="contained" color="primary" onClick={nextQuestion}>
-        {currentQuestion < questions.length - 1 ? '다음' : '완료'}
-      </Button>
+    <Box
+      textAlign="center"
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'background.default',
+        p: 3,
+      }}
+    >
+      <Card
+        sx={{
+          width: '100%',
+          maxWidth: 500,
+          p: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
+      >
+        <Typography variant="h6" gutterBottom>
+          {questions[currentQuestion]}
+        </Typography>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="답변을 입력하세요"
+          onChange={handleAnswer}
+          value={answers[currentQuestion] || ''}
+          sx={{ mb: 3 }}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={nextQuestion}
+          fullWidth
+        >
+          {currentQuestion < questions.length - 1 ? '다음' : '완료'}
+        </Button>
+      </Card>
     </Box>
   );
 };
