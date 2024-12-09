@@ -2,22 +2,21 @@
 # To get started, simply uncomment the below code or create your own.
 # Deploy with `firebase deploy`
 
-from firebase_functions import https_fn, config
+from firebase_functions import https_fn
 from firebase_admin import initialize_app
 from openai import OpenAI
 import os, json
 
-# 환경 변수에서 OpenAI API 키 가져오기
-OPENAI_API_KEY = config().openai.key
-
 initialize_app()
 
-@https_fn.on_request()
+@https_fn.on_request(secrets=["OPENAI_API_KEY"])
 def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
     try:
         # 클라이언트에서 보낸 데이터
         # data = request.get_json()
         # user_input = data.get("input", "")
+
+        OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
         query = '''
             Q. 올해 당신이 가장 많은 시간을 쓴 분야는 무엇인가요?
@@ -59,15 +58,16 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
         # GPT API 호출
         response = client.chat.completions.create(model=model, messages=messages)
 
+        letter = response.choices[0].message.content.split('=====')[0]
+        prompt = response.choices[0].message.content.split('=====')[1]
+
+        response2 = client.images.generate(model="dall-e-3", prompt=prompt + '\nstyle: 수채화 스타일, colors: 파스텔 톤, else: 인물은 한국인 스타일로, 너무 사실적이지 않은 적당한')
+        cover = response2.data[0].url
+
         # GPT 응답 전송
-        return https_fn.Response(json.dumps({"response": response.choices[0].text.strip()}), status=200, mimetype="application/json")
+        return https_fn.Response(json.dumps({"letter": letter, "cover": cover}), status=200, mimetype="application/json")
 
     except Exception as e:
         return https_fn.Response(
-            json.dumps({"error": str(e) + f'api_key: {OPENAI_API_KEY}'}), status=500, mimetype="application/json"
+            json.dumps({"error": str(e)}), status=500, mimetype="application/json"
         )
-#
-#
-# @https_fn.on_request()
-# def on_request_example(req: https_fn.Request) -> https_fn.Response:
-#     return https_fn.Response("Hello world!")

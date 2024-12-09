@@ -2,6 +2,21 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Firebase Functions 관련 명령어(python)
+
+```bash
+$ firebase functions:secrets:set API_KEY
+$ firebase deploy --only functions
+```
+
+```python
+@https_fn.on_request(secrets=["OPENAI_API_KEY"])
+def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
+    try:
+        OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+        print(f'key: {OPENAI_API_KEY}')
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
