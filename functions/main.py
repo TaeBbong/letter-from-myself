@@ -11,11 +11,27 @@ initialize_app()
 
 @https_fn.on_request(secrets=["OPENAI_API_KEY"])
 def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
+    if req.method == "OPTIONS":
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST",
+            "Access-Control-Allow-Headers": "Authorization, Content-Type",
+            "Access-Control-Max-Age": "3600",
+        }
+
+        return ("", 204, headers)
+    
+    headers = {"Access-Control-Allow-Origin": "*"}
+
     try:
         # 클라이언트에서 보낸 데이터
         data = req.get_json()
         if not isinstance(data, dict):
-            return https_fn.Response("Invalid request body. Expected JSON object.", status=400)
+            return https_fn.Response(
+                "Invalid request body. Expected JSON object.", 
+                status=400,
+                headers=headers
+            )
         # user_input = data.get("input", "")
 
         OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
@@ -35,7 +51,8 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
         if not isinstance(answers, list) or len(answers) != len(questions):
             return https_fn.Response(
                 "Invalid 'answers' format. Expected a list with 7 items.", 
-                status=400
+                status=400,
+                headers=headers
             )
         
         query_parts = [f"Q. {q}\nA. {a}" for q, a in zip(questions, answers)]
@@ -89,9 +106,9 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
         cover = response2.data[0].url
 
         # GPT 응답 전송
-        return https_fn.Response(json.dumps({"letter": letter, "cover": cover}), status=200, mimetype="application/json")
+        return https_fn.Response(json.dumps({"letter": letter, "cover": cover}), status=200, mimetype="application/json", headers=headers)
 
     except Exception as e:
         return https_fn.Response(
-            json.dumps({"error": str(e)}), status=500, mimetype="application/json"
+            json.dumps({"error": str(e)}), status=500, mimetype="application/json", headers=headers
         )
