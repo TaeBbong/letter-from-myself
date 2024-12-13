@@ -2,7 +2,8 @@ import axios from 'axios';
 
 const useGPT = () => {
   const fetchGPTResult = async (answers) => {
-    const apiEndpoint = 'https://call-gpt-handler-wasoaojb7q-uc.a.run.app'; // Firebase Functions API URL
+    // const apiEndpoint = 'https://call-gpt-handler-wasoaojb7q-uc.a.run.app'; // Firebase Functions API URL
+    const apiEndpoint = 'http://127.0.0.1:5001/fromitome/us-central1/call_gpt_handler'
 
     // 요청 데이터 준비
     const requestData = {

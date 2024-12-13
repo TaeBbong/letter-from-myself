@@ -6,7 +6,7 @@ import useGPT from '../hooks/useGPT';
 const Result = () => {
   const [result, setResult] = useState(null);
   const [imageURL, setImageURL] = useState(null);
-  const answers = JSON.parse(localStorage.getItem('answers'));
+  const answers = Object.values(JSON.parse(localStorage.getItem('answers')));
   const { fetchGPTResult } = useGPT();
 
   useEffect(() => {

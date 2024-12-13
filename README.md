@@ -7,6 +7,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ```bash
 $ firebase functions:secrets:set API_KEY
 $ firebase deploy --only functions
+$ firebase emulators:start --only functions
 ```
 
 ```python
