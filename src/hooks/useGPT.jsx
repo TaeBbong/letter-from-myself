@@ -21,8 +21,8 @@ const useGPT = () => {
 
       // 응답 데이터 추출
       if (response.status === 200) {
-        const { letter, cover } = response.data;
-        return { letter, cover };
+        const { letter, image } = response.data;
+        return { letter, image };
       } else {
         throw new Error(`API 호출 실패: ${response.status}`);
       }

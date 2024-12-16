@@ -50,7 +50,10 @@ const Result = () => {
     );
   }
 
+  console.log('Result: ', result);
+
   return (
+    
     <Box
       sx={{
         height: '100vh',
