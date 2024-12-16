@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Box, Typography, Button, CircularProgress, Card } from '@mui/material';
 import html2canvas from 'html2canvas';
 import useGPT from '../hooks/useGPT';
 
 const Result = () => {
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [imageURL, setImageURL] = useState(null);
-  const answers = Object.values(JSON.parse(localStorage.getItem('answers')));
+  const answers = useMemo(() => Object.values(JSON.parse(localStorage.getItem('answers'))), []);
   const { fetchGPTResult } = useGPT();
 
   useEffect(() => {
-    (async () => {
+    const fetchResult = async () => {
+      setLoading(true);
       const data = await fetchGPTResult(answers);
       setResult(data);
-    })();
+      setLoading(false);
+    };
+
+    fetchResult();
   }, [answers, fetchGPTResult]);
 
   const captureResult = async () => {
@@ -36,7 +41,7 @@ const Result = () => {
     }
   };
 
-  if (!result) {
+  if (loading || !result) {
     return (
       <Box textAlign="center" mt={4}>
         <CircularProgress />
