@@ -5,7 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## TODO
 
 - [ ] 요청 두번씩 호출되는 것
-- [ ] 이미지 url 전달해줄 때 base url 붙이기(서버 엔드포인트)
+- [-] firebase storage 활용 이미지 저장, url 공유
 - [ ] result 페이지의 url을 따로 저장하여, url채로 공유하기
 - [ ] prompt missing 에러 확인, 조치
 - [ ] 편지 규격 맞추기(글자 수, 시작/끝)

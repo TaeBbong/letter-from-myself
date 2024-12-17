@@ -3,22 +3,14 @@
 # Deploy with `firebase deploy`
 
 from firebase_functions import https_fn
-from firebase_admin import initialize_app
+from firebase_admin import initialize_app, storage
 from openai import OpenAI
 import os, json, requests
 from datetime import datetime
 
 initialize_app()
 
-# 이미지 저장 경로
-BASE_IMAGE_DIR = "./images"
-
-# 날짜별 폴더 생성 함수
-def get_image_save_path():
-    today = datetime.now().strftime("%Y-%m-%d")
-    folder_path = os.path.join(BASE_IMAGE_DIR, today)
-    os.makedirs(folder_path, exist_ok=True)  # 폴더가 없으면 생성
-    return folder_path
+BUCKET_NAME = "fromitome.firebasestorage.app"
 
 @https_fn.on_request(secrets=["OPENAI_API_KEY"])
 def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
@@ -95,16 +87,8 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
         response2 = client.images.generate(model="dall-e-3", prompt=prompt + '\nstyle: 수채화 스타일, colors: 파스텔 톤, else: 사람은 최대한 등장시키지 않고, 나오더라도 뒷모습 정도만 나오게')
         image_url = response2.data[0].url
 
-        # 이미지 다운로드
-        save_path = get_image_save_path()
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        image_file_path = os.path.join(save_path, f"image_{timestamp}.png")
-
         response_image = requests.get(image_url)
-        if response_image.status_code == 200:
-            with open(image_file_path, "wb") as img_file:
-                img_file.write(response_image.content)
-        else:
+        if response_image.status_code != 200:
             return https_fn.Response(
                 json.dumps({"error": "Failed to download the image"}),
                 status=500,
@@ -112,9 +96,20 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
                 headers=headers
             )
 
+        # 이미지 Firebase Storage에 업로드
+        bucket = storage.bucket(BUCKET_NAME)
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        blob_path = f"images/{datetime.now().strftime('%Y-%m-%d')}/image_{timestamp}.png"
+
+        blob = bucket.blob(blob_path)
+        blob.upload_from_string(response_image.content, content_type="image/png")
+
+        # 이미지의 공개 URL 생성
+        blob.make_public()
+        image_public_url = blob.public_url
 
         # GPT 응답 전송
-        return https_fn.Response(json.dumps({"letter": letter, "image": image_file_path}), status=200, mimetype="application/json", headers=headers)
+        return https_fn.Response(json.dumps({"letter": letter, "image": image_public_url}), status=200, mimetype="application/json", headers=headers)
 
     except Exception as e:
         return https_fn.Response(
