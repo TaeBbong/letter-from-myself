@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Box, Typography, Button, CircularProgress, Card } from '@mui/material';
+import { Box, Typography, Button, Card } from '@mui/material';
 import html2canvas from 'html2canvas';
 import useGPT from '../hooks/useGPT';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../loading-animation.json';
 
 const Result = () => {
   const [result, setResult] = useState(null);
@@ -43,9 +45,22 @@ const Result = () => {
 
   if (loading || !result) {
     return (
-      <Box textAlign="center" mt={4}>
-        <CircularProgress />
-        <Typography mt={2}>편지를 작성 중입니다...</Typography>
+      <Box
+        textAlign="center"
+        mt={4}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',   
+          justifyContent: 'center', 
+          alignItems: 'center',      
+          height: '100vh',           
+        }}
+      >
+        <Lottie animationData={loadingAnimation} style={{ width: 200, height: 200 }} />
+        <Typography variant="h6" mt={2}>
+          편지를 준비하고 있어요...<br/>
+          20초만 기다려주세요 :)
+        </Typography>
       </Box>
     );
   }
