@@ -50,8 +50,6 @@ const Result = () => {
     );
   }
 
-  console.log('Result: ', result);
-
   return (
     
     <Box
@@ -80,11 +78,17 @@ const Result = () => {
         <Typography variant="body1" gutterBottom>
           {result.letter}
         </Typography>
-        <img
-          src={result.image}
-          alt="Generated Illustration"
-          style={{ width: '100%', marginTop: '16px', borderRadius: '8px' }}
-        />
+        <div>
+          {result.image ? (
+            <img
+              src={result.image}
+              alt="Generated Illustration"
+              style={{ width: '100%', marginTop: '16px', borderRadius: '8px' }}
+            />
+          ) : (
+            <p>이미지 로드 중...</p>
+          )}
+        </div>
         <Button
           variant="contained"
           color="primary"

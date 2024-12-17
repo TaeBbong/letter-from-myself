@@ -5,9 +5,20 @@
 from firebase_functions import https_fn
 from firebase_admin import initialize_app
 from openai import OpenAI
-import os, json
+import os, json, requests
+from datetime import datetime
 
 initialize_app()
+
+# 이미지 저장 경로
+BASE_IMAGE_DIR = "./images"
+
+# 날짜별 폴더 생성 함수
+def get_image_save_path():
+    today = datetime.now().strftime("%Y-%m-%d")
+    folder_path = os.path.join(BASE_IMAGE_DIR, today)
+    os.makedirs(folder_path, exist_ok=True)  # 폴더가 없으면 생성
+    return folder_path
 
 @https_fn.on_request(secrets=["OPENAI_API_KEY"])
 def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
@@ -82,10 +93,28 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
         ) 
 
         response2 = client.images.generate(model="dall-e-3", prompt=prompt + '\nstyle: 수채화 스타일, colors: 파스텔 톤, else: 사람은 최대한 등장시키지 않고, 나오더라도 뒷모습 정도만 나오게')
-        cover = response2.data[0].url
+        image_url = response2.data[0].url
+
+        # 이미지 다운로드
+        save_path = get_image_save_path()
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        image_file_path = os.path.join(save_path, f"image_{timestamp}.png")
+
+        response_image = requests.get(image_url)
+        if response_image.status_code == 200:
+            with open(image_file_path, "wb") as img_file:
+                img_file.write(response_image.content)
+        else:
+            return https_fn.Response(
+                json.dumps({"error": "Failed to download the image"}),
+                status=500,
+                mimetype="application/json",
+                headers=headers
+            )
+
 
         # GPT 응답 전송
-        return https_fn.Response(json.dumps({"letter": letter, "image": cover}), status=200, mimetype="application/json", headers=headers)
+        return https_fn.Response(json.dumps({"letter": letter, "image": image_file_path}), status=200, mimetype="application/json", headers=headers)
 
     except Exception as e:
         return https_fn.Response(
