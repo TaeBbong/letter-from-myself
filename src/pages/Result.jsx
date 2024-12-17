@@ -67,6 +67,9 @@ const Result = () => {
         sx={{
           width: '100%',
           maxWidth: 500,
+          maxHeight: '60vh',
+          overflowY: 'auto',
+          paddingLeft: '8px',
           p: 4,
           borderRadius: 2,
           boxShadow: 3,
