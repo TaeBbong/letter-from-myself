@@ -78,14 +78,6 @@ const Result = () => {
         <Typography variant="h5" gutterBottom>
           내년의 나에게 보내는 편지
         </Typography>
-        <Typography variant="body1" gutterBottom>
-          {result.letter.split('\n').map((line, index) => (
-            <React.Fragment key={index}>
-              {line}
-              <br />
-            </React.Fragment>
-          ))}
-        </Typography>
         <div>
           {result.image ? (
             <img
@@ -97,6 +89,14 @@ const Result = () => {
             <p>이미지 로드 중...</p>
           )}
         </div>
+        <Typography variant="body1" gutterBottom>
+          {result.letter.split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
+        </Typography>
         <Button
           variant="contained"
           color="primary"
