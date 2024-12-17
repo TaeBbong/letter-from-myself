@@ -76,7 +76,12 @@ const Result = () => {
           내년의 나에게 보내는 편지
         </Typography>
         <Typography variant="body1" gutterBottom>
-          {result.letter}
+          {result.letter.split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
         </Typography>
         <div>
           {result.image ? (
