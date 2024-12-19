@@ -23,6 +23,8 @@ const Result = () => {
     fetchResult();
   }, [answers, fetchGPTResult]);
 
+  // TODO: 결과 저장 시 로고 + 생성 이미지 형태로 저장
+  // TODO: 결과 저장 버튼 sticky bottom
   const captureResult = async () => {
     const resultElement = document.getElementById('result-content');
     const canvas = await html2canvas(resultElement);
@@ -121,17 +123,6 @@ const Result = () => {
         >
           결과 저장
         </Button>
-        {imageURL && (
-          <Button
-            variant="outlined"
-            color="secondary"
-            fullWidth
-            sx={{ mt: 2 }}
-            onClick={shareToInstagram}
-          >
-            인스타그램으로 공유
-          </Button>
-        )}
       </Card>
     </Box>
   );
