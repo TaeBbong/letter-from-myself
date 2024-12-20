@@ -13,6 +13,24 @@ initialize_app()
 BUCKET_NAME = "fromitome.firebasestorage.app"
 
 @https_fn.on_request(secrets=["OPENAI_API_KEY"])
+def test_handler(req: https_fn.Request) -> https_fn.Response:
+    letter = "안녕, 내년의 나야! 올해는 정말 다채로운 순간들로 가득했던 것 같아. 클라이밍에 많은 시간을 투자하며 더 강해졌고, 도전하는 즐거움을 만끽했지. 홋카이도에서의 수채화 같은 풍경과, 강릉 바다에서의 소중한 추억은 내 마음속에 깊게 새겨졌어. 생일날 강릉에서 바라본 바다는 정말 특별했어. 그런 순간들이 있기에 더욱더 감사한 것 같아.\n\n또한, 목표했던 3개의 사이드 프로젝트는 완벽하게 이루진 않았지만, 부분적으로라도 진전을 이룬 것에 큰 의미를 두고 싶어. 작은 성취들이 모여 큰 그림을 그릴 수 있다는 걸 다시 한번 깨달았거든. 올해 고민했던 진로는 지금 생각하면 괜한 걱정이 아닐까 싶기도 해. 나 자신에게 지나치게 엄격하게 굴지 말고, 때로는 그냥 흐르는 대로 가보도록 하자. \n\n내년에는 조금 더 가벼운 마음으로 도전해보길 바래! 실패를 두려워하지 말고, 모든 과정에서 배우는 즐거움을 찾아가길. 매일매일이 소중하고 새로운 기회라는 걸 잊지 말고, 나의 길을 당당히 걸어가길!\n\n2024년의 내가\n"
+    image_public_url = "https://storage.googleapis.com/fromitome.firebasestorage.app/images/2024-12-19/image_20241219084736.png"
+    
+    if req.method == "OPTIONS":
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST",
+            "Access-Control-Allow-Headers": "Authorization, Content-Type",
+            "Access-Control-Max-Age": "3600",
+        }
+        return ("", 204, headers)
+
+    headers = {"Access-Control-Allow-Origin": "*"}
+    
+    return https_fn.Response(json.dumps({"letter": letter, "image": image_public_url}), status=200, mimetype="application/json", headers=headers)
+
+@https_fn.on_request(secrets=["OPENAI_API_KEY"])
 def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
     if req.method == "OPTIONS":
         headers = {

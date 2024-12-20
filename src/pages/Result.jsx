@@ -45,7 +45,7 @@ const Result = () => {
     // Add generated illustration with proxy
     if (result.image) {
       const image = new Image();
-      const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // Replace with your proxy
+      const proxyUrl = 'https://corsproxy.io/?url='; // Replace with your proxy
       image.crossOrigin = 'anonymous'; // Enable CORS
       image.src = proxyUrl + result.image;
 

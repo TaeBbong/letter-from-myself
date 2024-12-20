@@ -8,9 +8,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     - React의 개발단계 검사모드인 StrictMode 때문에 2번 렌더링 됨
     - 빌드하여 배포 모드로 실행하면 1번만 잘 실행됨
 - [-] firebase storage 활용 이미지 저장, url 공유
-- [ ] result 페이지의 url을 따로 저장하여, url채로 공유하기
 - [-] prompt missing 에러 확인, 조치
 - [-] 편지 규격 맞추기(글자 수, 시작/끝)
+- [ ] result 페이지의 url을 따로 저장하여, url채로 공유하기
+- [ ] 결과 저장 일단은 cors proxy로 조치는 했음, 저장 포맷 더 이쁘게 만들기(아니면 걍 원본 이미지만 받아가던가)
+- [-] 예시 데이터 전송해주는 테스트용 api 생성
 
 ## Firebase Functions 관련 명령어(python)
 
