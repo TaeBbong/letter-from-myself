@@ -3,12 +3,13 @@
 # Deploy with `firebase deploy`
 
 from firebase_functions import https_fn
-from firebase_admin import initialize_app, storage
+from firebase_admin import initialize_app, storage, firestore
 from openai import OpenAI
 import os, json, requests
 from datetime import datetime
 
 initialize_app()
+db = firestore.client()
 
 BUCKET_NAME = "fromitome.firebasestorage.app"
 
@@ -150,10 +151,71 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
         blob.make_public()
         image_public_url = blob.public_url
 
+        # Firestore에 데이터 저장
+        doc_id = f"result-{timestamp}"  # 고유 ID 생성
+        db.collection("results").document(doc_id).set({
+            "id": doc_id,
+            "letter": letter,
+            "image": image_public_url,
+            "createdAt": firestore.SERVER_TIMESTAMP
+        })
+
         # GPT 응답 전송
         return https_fn.Response(json.dumps({"letter": letter, "image": image_public_url}), status=200, mimetype="application/json", headers=headers)
 
     except Exception as e:
         return https_fn.Response(
             json.dumps({"error": str(e)}), status=500, mimetype="application/json", headers=headers
+        )
+
+
+@https_fn.on_request()
+def get_result_handler(req: https_fn.Request) -> https_fn.Response:
+    if req.method == "OPTIONS":
+        headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST",
+            "Access-Control-Allow-Headers": "Authorization, Content-Type",
+            "Access-Control-Max-Age": "3600",
+        }
+        return ("", 204, headers)
+
+    headers = {"Access-Control-Allow-Origin": "*"}
+
+    try:
+        # 요청에서 ID 가져오기
+        doc_id = req.args.get("id")
+        if not doc_id:
+            return https_fn.Response(
+                "Missing 'id' parameter.",
+                status=400,
+                mimetype="application/json",
+                headers=headers
+            )
+
+        # Firestore에서 문서 조회
+        doc_ref = db.collection("results").document(doc_id)
+        doc = doc_ref.get()
+        if not doc.exists:
+            return https_fn.Response(
+                "Document not found.",
+                status=404,
+                mimetype="application/json",
+                headers=headers
+            )
+
+        # 데이터 반환
+        return https_fn.Response(
+            json.dumps(doc.to_dict()),
+            status=200,
+            mimetype="application/json",
+            headers=headers
+        )
+
+    except Exception as e:
+        return https_fn.Response(
+            json.dumps({"error": str(e)}),
+            status=500,
+            mimetype="application/json",
+            headers=headers
         )
