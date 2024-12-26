@@ -209,7 +209,7 @@ def get_result_handler(req: https_fn.Request) -> https_fn.Response:
 
         # 데이터 반환
         return https_fn.Response(
-            json.dumps(doc.to_dict()),
+            json.dumps(doc.to_dict(), default=str, indent=2),
             status=200,
             mimetype="application/json",
             headers=headers
