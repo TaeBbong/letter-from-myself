@@ -4,8 +4,9 @@ import { useCallback } from 'react';
 const useGPT = () => {
   const fetchGPTResult = useCallback(async (answers) => {
     // const apiEndpoint = 'https://call-gpt-handler-wasoaojb7q-uc.a.run.app'; // Firebase Functions API URL
+    const apiEndpoint = 'https://test-handler-wasoaojb7q-uc.a.run.app';
     // const apiEndpoint = 'http://127.0.0.1:5001/fromitome/us-central1/call_gpt_handler'
-    const apiEndpoint = 'http://127.0.0.1:5001/fromitome/us-central1/test_handler'
+    // const apiEndpoint = 'http://127.0.0.1:5001/fromitome/us-central1/test_handler'
 
     // 요청 데이터 준비
     const requestData = {

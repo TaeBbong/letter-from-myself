@@ -3,12 +3,17 @@
 # Deploy with `firebase deploy`
 
 from firebase_functions import https_fn
-from firebase_admin import initialize_app, storage, firestore
+from firebase_admin import initialize_app, storage, firestore, credentials
 from openai import OpenAI
 import os, json, requests
 from datetime import datetime
 
-initialize_app()
+try:
+    cred = credentials.Certificate(".\\fromitome-firebase-adminsdk-hncvs-1d9b4ed8fa.json")
+    initialize_app(cred)
+except:
+    initialize_app()
+
 db = firestore.client()
 
 BUCKET_NAME = "fromitome.firebasestorage.app"
@@ -21,7 +26,7 @@ def test_handler(req: https_fn.Request) -> https_fn.Response:
     if req.method == "OPTIONS":
         headers = {
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST",
+            "Access-Control-Allow-Methods": "GET",
             "Access-Control-Allow-Headers": "Authorization, Content-Type",
             "Access-Control-Max-Age": "3600",
         }
@@ -46,7 +51,6 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
     headers = {"Access-Control-Allow-Origin": "*"}
 
     try:
-        # 클라이언트에서 보낸 데이터
         data = req.get_json()
         if not isinstance(data, dict):
             return https_fn.Response(
@@ -54,7 +58,6 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
                 status=400,
                 headers=headers
             )
-        # user_input = data.get("input", "")
 
         OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
@@ -214,7 +217,7 @@ def get_result_handler(req: https_fn.Request) -> https_fn.Response:
 
     except Exception as e:
         return https_fn.Response(
-            json.dumps({"error": str(e)}),
+            json.dumps({"ERROR": str(e)}),
             status=500,
             mimetype="application/json",
             headers=headers
