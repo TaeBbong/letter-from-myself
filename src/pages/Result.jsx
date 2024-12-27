@@ -1,10 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Card } from '@mui/material';
 import useGPT from '../hooks/useGPT';
+import getResult from '../hooks/getResult';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../loading-animation.json';
 
 const Result = () => {
+  const { resultId } = useParams(); 
+  const navigate = useNavigate(); 
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const answers = useMemo(() => Object.values(JSON.parse(localStorage.getItem('answers'))), []);
@@ -13,75 +17,30 @@ const Result = () => {
   useEffect(() => {
     const fetchResult = async () => {
       setLoading(true);
-      const data = await fetchGPTResult(answers);
-      setResult(data);
+      if (resultId) {
+        try {
+          const { letter, image } = await getResult(resultId);
+          setResult({ letter, image });
+        } catch (error) {
+          console.error('Failed to fetch result:', error);
+          alert('결과를 로드하는 데 실패했습니다.');
+        }
+      } else {
+        try {
+          const { id, letter, image } = await fetchGPTResult(answers);
+          setResult({ letter, image });
+          navigate(`/result/${id}`);
+        }
+        catch(error) {
+          console.error('Failed to generate result:', error);
+          alert('결과 생성에 실패했습니다.');
+        }
+      }
       setLoading(false);
     };
 
     fetchResult();
-  }, [answers, fetchGPTResult]);
-
-  const createCustomImage = async () => {
-    const letterExcerpt = result.letter.split('\n').slice(0, 3).join('\n') + '...';
-
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    const width = 500;
-    const height = 700;
-    canvas.width = width;
-    canvas.height = height;
-
-    // Background
-    context.fillStyle = '#ffffff';
-    context.fillRect(0, 0, width, height);
-
-    // Add styled logo text
-    context.font = 'bold 32px Arial';
-    context.textAlign = 'center';
-    context.fillStyle = '#333';
-    context.fillText('From I to Me', width / 2, 60);
-
-    // Add generated illustration with proxy
-    if (result.image) {
-      const image = new Image();
-      const proxyUrl = 'https://corsproxy.io/?url='; // Replace with your proxy
-      image.crossOrigin = 'anonymous'; // Enable CORS
-      image.src = proxyUrl + result.image;
-
-      try {
-        await new Promise((resolve, reject) => {
-          image.onload = resolve;
-          image.onerror = reject;
-        });
-        context.drawImage(image, 50, 100, 400, 300);
-      } catch (error) {
-        console.error('Failed to load image:', error);
-        alert('이미지를 로드하는 데 실패했습니다. 이미지 없이 캡처를 진행합니다.');
-      }
-    }
-
-    // Add letter excerpt
-    context.font = '18px Arial';
-    context.textAlign = 'left';
-    context.fillStyle = '#000';
-    const lines = letterExcerpt.split('\n');
-    lines.forEach((line, index) => {
-      context.fillText(line, 50, 450 + index * 30);
-    });
-
-    // Convert to image and download
-    try {
-      const finalImageURL = canvas.toDataURL('image/png');
-      const downloadLink = document.createElement('a');
-      downloadLink.href = finalImageURL;
-      downloadLink.download = 'letter-capture.png';
-      downloadLink.click();
-    } catch (error) {
-      console.error('Failed to export canvas:', error);
-      alert('이미지 저장에 실패했습니다.');
-    }
-  };
+  }, [answers, resultId, navigate, fetchGPTResult]);
 
   if (loading || !result) {
     return (
@@ -177,9 +136,10 @@ const Result = () => {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={createCustomImage}
+            // TODO: 링크 copy하는 것으로 대체
+            // onClick={createCustomImage}
           >
-            결과 저장
+            링크 저장
           </Button>
         </Box>
       </Card>

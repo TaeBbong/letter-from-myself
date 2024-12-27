@@ -41,6 +41,7 @@ const App = () => (
         <Route path="/" element={<Intro />} />
         <Route path="/questions" element={<Questionnaire />} />
         <Route path="/result" element={<Result />} />
+        <Route path="/result/:resultId" element={<Result />} />
       </Routes>
     </Router>
   </ThemeProvider>
