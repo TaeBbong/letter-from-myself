@@ -89,13 +89,13 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
         받는 사람이 감동받을 정도로 따뜻하게 작성해줘.
         **Response Template**은 반드시 아래의 양식처럼 작성해야 해:  
 
-        [300자 내외의 내용으로 편지를 작성. 편지는 올해의 성취, 기억, 고민을 짧고 자연스럽게 정리하며 내년의 나에게 따뜻한 응원과 피드백을 전하는 내용이어야 합니다.]
+        [900자 내외의 내용으로 편지를 작성. 편지는 올해의 성취, 기억, 고민을 짧고 자연스럽게 정리하며 내년의 나에게 따뜻한 응원과 피드백을 전하는 내용이어야 합니다.]
         2024년의 내가
         =====
         [편지 내용과 연결되는 희망적이고 감성적인 그림을 표현하는 Image prompt를 작성. 예: "Bright, familiar air with mountains and a climber reaching the top."]
 
         **꼭 지킬 조건**:  
-        1. 편지 길이는 **900~1000자 범위**로 작성하고, 초과하지 않도록 주의해.  
+        1. 편지 길이는 **900~1000자 범위**로 작성하고, 900자보다 적거나 1000자를 초과하지 않도록 주의해.  
         2. 양식은 반드시 위에서 제시한 **Response Template**을 그대로 따라야 해.  
         3. 본문, '2024년의 내가' 사이에는 각각 엔터가 들어가야 해('\n')
         4. Image prompt는 편지와 감성적으로 연결되게 작성해.  
@@ -164,7 +164,7 @@ def call_gpt_handler(req: https_fn.Request) -> https_fn.Response:
         })
 
         # GPT 응답 전송
-        return https_fn.Response(json.dumps({"letter": letter, "image": image_public_url}), status=200, mimetype="application/json", headers=headers)
+        return https_fn.Response(json.dumps({"id": doc_id, "letter": letter, "image": image_public_url}), status=200, mimetype="application/json", headers=headers)
 
     except Exception as e:
         return https_fn.Response(

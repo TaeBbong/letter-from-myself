@@ -9,7 +9,6 @@ const Intro = () => {
     <Box
       textAlign="center"
       sx={{
-        backgroundImage: 'url(https://oaidalleapiprodscus.blob.core.windows.net/private/org-mvGNPG6dEerVMEJd8gHxcsUf/user-VooybjNYLmZIQeiRzan1yiLu/img-TNtkoqK6PdRYZ1kDIOz1Wd9Z.png?st=2024-12-09T11%3A04%3A03Z&se=2024-12-09T13%3A04%3A03Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-08T23%3A29%3A16Z&ske=2024-12-09T23%3A29%3A16Z&sks=b&skv=2024-08-04&sig=1aPpNTC5422yjUO4nQ0k79VANEr5SUatdka9eyLsm34%3D)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: '100vh',
