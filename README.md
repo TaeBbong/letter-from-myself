@@ -4,8 +4,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## TODO
 
-- [ ] (프론트엔드) result 페이지의 url을 따로 저장하여, url채로 공유하기
-- [ ] (프론트엔드) endpoint 정리
+- [ ] dynamic meta tag 설정(react-helmet-async, react-snap / next.js)
 
 ## Firebase Functions 관련 명령어(python)
 
