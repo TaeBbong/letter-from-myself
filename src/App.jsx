@@ -4,6 +4,7 @@ import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import Intro from './pages/Intro';
 import Questionnaire from './pages/Questionnaire';
 import Result from './pages/Result';
+import Footer from './components/Footer';
 
 // 연말 감성 테마 설정
 const theme = createTheme({
@@ -41,12 +42,17 @@ const App = () => (
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Router>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ flex: 1 }}>
       <Routes>
         <Route path="/" element={<Intro />} />
         <Route path="/questions" element={<Questionnaire />} />
         <Route path="/result" element={<Result />} />
         <Route path="/result/:resultId" element={<Result />} />
       </Routes>
+      </div>
+      <Footer />
+      </div>
     </Router>
   </ThemeProvider>
 );
