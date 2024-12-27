@@ -18,6 +18,10 @@ const theme = createTheme({
     background: {
       default: '#FFF8F0', // 부드러운 연말 배경색
     },
+    christmasGreen: {
+      main: '#6BA292', // 파스텔 톤의 세이지 그린
+      contrastText: '#fff', 
+    },
   },
   typography: {
     fontFamily: `'Quicksand', sans-serif`,

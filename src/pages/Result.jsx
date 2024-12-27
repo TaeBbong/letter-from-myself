@@ -142,16 +142,31 @@ const Result = () => {
             backdropFilter: 'blur(10px)',
             width: '80%',
             py: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
           }}
         >
           <Button
             variant="contained"
             color="primary"
             fullWidth
-            // TODO: 링크 copy하는 것으로 대체
+            sx={{ margin: 0 }} // 버튼 마진 제거
             onClick={() => handleCopyClipBoard(`${baseUrl}${location.pathname}`)}
           >
             링크 저장
+          </Button>
+          <Button
+            variant="contained"
+            color="christmasGreen"
+            fullWidth
+            sx={{ margin: 0 }} // 버튼 마진 제거
+            onClick={() => {
+              localStorage.clear();
+              navigate('/');
+            }}
+          >
+            새로운 편지 만들기
           </Button>
         </Box>
       </Card>
