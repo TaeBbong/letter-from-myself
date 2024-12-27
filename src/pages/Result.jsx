@@ -5,6 +5,7 @@ import useGPT from '../hooks/useGPT';
 import getResult from '../hooks/getResult';
 import Lottie from 'lottie-react';
 import loadingAnimation from '../loading-animation.json';
+import '../index.css';
 
 const Result = () => {
   const { resultId } = useParams(); 
@@ -101,7 +102,7 @@ const Result = () => {
           position: 'relative',
         }}
       >
-        <Typography variant="h5" gutterBottom sx={{ px: 2, pt: 2 }}>
+        <Typography variant="h5" gutterBottom sx={{ px: 2, pt: 2 }} style={{fontFamily: 'MaruBuri-Bold'}}>
           내년의 나에게 보내는 편지
         </Typography>
         <Box
@@ -124,7 +125,7 @@ const Result = () => {
               <p>이미지 로드 중...</p>
             )}
           </div>
-          <Typography variant="body1" gutterBottom>
+          <Typography variant="body1" gutterBottom style={{fontFamily: 'Oneprettynight'}}>
             {result.letter.split('\n').map((line, index) => (
               <React.Fragment key={index}>
                 {line}
