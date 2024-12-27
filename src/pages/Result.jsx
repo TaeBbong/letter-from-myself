@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, Button, Card } from '@mui/material';
 import useGPT from '../hooks/useGPT';
 import getResult from '../hooks/getResult';
@@ -13,6 +13,8 @@ const Result = () => {
   const [loading, setLoading] = useState(false);
   const answers = useMemo(() => Object.values(JSON.parse(localStorage.getItem('answers'))), []);
   const { fetchGPTResult } = useGPT();
+  const baseUrl = "https://fromitome.web.app"
+  const location = useLocation();
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -41,6 +43,15 @@ const Result = () => {
 
     fetchResult();
   }, [answers, resultId, navigate, fetchGPTResult]);
+
+  const handleCopyClipBoard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("링크가 복사되었어요.");
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   if (loading || !result) {
     return (
@@ -137,7 +148,7 @@ const Result = () => {
             color="primary"
             fullWidth
             // TODO: 링크 copy하는 것으로 대체
-            // onClick={createCustomImage}
+            onClick={() => handleCopyClipBoard(`${baseUrl}${location.pathname}`)}
           >
             링크 저장
           </Button>
