@@ -12,10 +12,28 @@ const Result = () => {
   const navigate = useNavigate(); 
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const answers = useMemo(() => Object.values(JSON.parse(localStorage.getItem('answers'))), []);
+  const answers = useMemo(() => {
+    const storedAnswers = localStorage.getItem('answers');
+    return storedAnswers ? Object.values(JSON.parse(storedAnswers)) : [];
+  }, []);
   const { fetchGPTResult } = useGPT();
   const baseUrl = "https://fromitome.web.app"
   const location = useLocation();
+
+  useEffect(() => {
+    const handlePopState = () => {
+      // 브라우저의 뒤로가기 버튼이 눌렸을 때 초기 페이지로 이동
+      navigate('/');
+    };
+
+    // popstate 이벤트 리스너 추가
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      // 컴포넌트 언마운트 시 popstate 이벤트 리스너 제거
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -27,6 +45,7 @@ const Result = () => {
         } catch (error) {
           console.error('Failed to fetch result:', error);
           alert('결과를 로드하는 데 실패했습니다.');
+          navigate('/');
         }
       } else {
         try {
@@ -37,9 +56,11 @@ const Result = () => {
         catch(error) {
           console.error('Failed to generate result:', error);
           alert('결과 생성에 실패했습니다.');
+          navigate('/');
         }
       }
       setLoading(false);
+      localStorage.clear();
     };
 
     fetchResult();
@@ -48,7 +69,6 @@ const Result = () => {
   const handleCopyClipBoard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      alert("링크가 복사되었어요.");
     } catch (err) {
       console.log(err);
     }
