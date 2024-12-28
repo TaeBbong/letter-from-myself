@@ -42,16 +42,30 @@ const App = () => (
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Router>
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-    <div style={{ flex: 1 }}>
-      <Routes>
-        <Route path="/" element={<Intro />} />
-        <Route path="/questions" element={<Questionnaire />} />
-        <Route path="/result" element={<Result />} />
-        <Route path="/result/:resultId" element={<Result />} />
-      </Routes>
-      </div>
-      <Footer />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh', // 화면 높이를 정확히 차지하도록 설정
+        }}
+      >
+        {/* Content area */}
+        <div
+          style={{
+            flex: 1, // 콘텐츠 영역이 남은 공간을 차지
+            overflowY: 'auto', // 콘텐츠가 많을 경우만 스크롤
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<Intro />} />
+            <Route path="/questions" element={<Questionnaire />} />
+            <Route path="/result" element={<Result />} />
+            <Route path="/result/:resultId" element={<Result />} />
+          </Routes>
+        </div>
+
+        {/* Footer fixed at the bottom */}
+        <Footer />
       </div>
     </Router>
   </ThemeProvider>
