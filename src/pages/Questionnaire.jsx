@@ -81,6 +81,9 @@ const Questionnaire = () => {
         }}
       >
         <Typography variant="h6" gutterBottom>
+          {`${currentQuestion + 1}/${questions.length}`}
+        </Typography>
+        <Typography variant="h6" gutterBottom>
           {questions[currentQuestion]}
         </Typography>
         <TextField
